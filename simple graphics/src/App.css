@@ -1,0 +1,127 @@
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear;
+    }
+}
+
+.card {
+    padding: 2em;
+}
+
+.read-the-docs {
+    color: #888;
+}
+
+.tools-section {
+    background-color: #2e2e2e;;
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.brush-params {
+    display: flex;
+    align-items: end;
+    justify-content: space-around;
+    margin-bottom: 12px;
+}
+
+.brush-size-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.brush-size-preview {
+    background-color: white;
+    border-radius: 50%;
+}
+
+.brush-width-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.brush-width-controls {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.brush-color-grid {
+  display: grid;
+  grid-gap: 6px;
+}
+
+.brushSizeField {
+    max-width: 30px;
+}
+
+.brushSizeField::-webkit-outer-spin-button,
+.brushSizeField::-webkit-inner-spin-button {
+    appearance: none;
+}
+
+.color-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 20%;
+    border: 2px solid white;
+}
+
+.color-button:not(:last-child) {
+    margin-right: 8px;
+}
+
+.canvas-and-settings {
+  display: flex;
+  gap: 16px;
+}
+
+.tools-upper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.canvas-actions {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
