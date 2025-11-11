@@ -9,21 +9,17 @@ const Canvas = ({
     ref,
 }) => {
     const canvasRef = useRef(null);
-    let drawnShapesRef = useRef([]);
-    let drawnLinesRef = useRef([]);
-    let filledSpaceRef = useRef([]);
+    const baseCanvasRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
         clearCanvas: () => {
-            drawnShapesRef.current = [];
-            drawnLinesRef.current = [];
-            filledSpaceRef.current = [];
-
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d');
 
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            baseCanvasRef.current = null;
         },
     }));
 
@@ -57,10 +53,6 @@ const Canvas = ({
                 canvas.height
             );
             const pixels = imageData.data;
-
-            filledSpaceRef.current.push({
-                imageData: imageData,
-            });
 
             const startPos = (startY * canvas.width + startX) * 4;
             const targetColor = [
@@ -148,39 +140,21 @@ const Canvas = ({
             lineWidth: brushSize,
         };
         let lineData = [];
+        let currentPath = [];
 
-        function redrawCanvas() {
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function saveBaseState() {
+            baseCanvasRef.current = ctx.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+        }
 
-            ctx.fillStyle = brushColor;
-
-            filledSpaceRef.current.forEach((space) => {
-                ctx.putImageData(space.imageData, 0, 0);
-            });
-
-            drawnShapesRef.current.forEach((shape) => {
-                if (shape.strokeColor !== null) {
-                    (ctx.lineWidth = shape.lineWidth),
-                        (ctx.strokeStyle = shape.strokeColor);
-                    ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
-                }
-                if (shape.fillColor !== null) {
-                    ctx.fillStyle = shape.fillColor;
-                    ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
-                }
-            });
-
-            drawnLinesRef.current.forEach((line) => {
-                ctx.strokeStyle = line[0][0];
-
-                ctx.beginPath();
-                ctx.moveTo(line[0][1][0], line[0][1][1]);
-                for (let i = 1; i < line.length; i++) {
-                    ctx.lineTo(line[i][0], line[i][1]);
-                }
-                ctx.stroke();
-            });
+        function restoreBaseState() {
+            if (baseCanvasRef.current) {
+                ctx.putImageData(baseCanvasRef.current, 0, 0);
+            }
         }
 
         const mouseDownHandler = (e) => {
@@ -192,13 +166,17 @@ const Canvas = ({
             lastX = Math.round(e.clientX - canvasCoords.left);
             lastY = Math.round(e.clientY - canvasCoords.top);
 
-            if (currentTool === 'pencil') {
-                lineData = [...lineData, [brushColor, [firstX, firstY]]];
+            if (currentTool === 'rectangle' || currentTool === 'pencil') {
+                saveBaseState();
+            }
 
+            if (currentTool === 'pencil') {
+                currentPath = [[firstX, firstY]];
                 ctx.beginPath();
                 ctx.arc(firstX, firstY, brushSize / 2, 0, Math.PI * 2);
                 ctx.fill();
             }
+
             if (currentTool === 'fill') {
                 fill(canvas, lastX, lastY, brushColor);
             }
@@ -209,13 +187,8 @@ const Canvas = ({
             }
         };
         const mouseUpHandler = () => {
-            isDrawing = false;
-            if (currentTool === 'rectangle') {
-                drawnShapesRef.current.push({ ...rectData });
-            }
-            if (currentTool === 'pencil') {
-                drawnLinesRef.current.push([...lineData]);
-                lineData = [];
+            if (currentTool === 'rectangle' || currentTool === 'pencil') {
+                isDrawing = false;
             }
         };
         const mouseMoveHandler = (e) => {
@@ -223,36 +196,30 @@ const Canvas = ({
                 currentX = e.clientX - canvasCoords.left;
                 currentY = e.clientY - canvasCoords.top;
 
-                lineData.push([currentX, currentY]);
-
                 if (currentTool === 'pencil') {
+                    currentPath.push([currentX, currentY]);
+
+                    restoreBaseState();
+
+                    ctx.strokeStyle = brushColor;
+                    ctx.lineWidth = brushSize;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+
                     ctx.beginPath();
-                    ctx.moveTo(lineData[0][1][0], lineData[0][1][1]);
-                    for (let i = 1; i < lineData.length; i++) {
-                        ctx.lineTo(lineData[i][0], lineData[i][1]);
+                    ctx.moveTo(currentPath[0][0], currentPath[0][1]);
+                    for (let i = 1; i < currentPath.length; i++) {
+                        ctx.lineTo(currentPath[i][0], currentPath[i][1]);
                     }
                     ctx.stroke();
                 }
-                lastX = currentX;
-                lastY = currentY;
 
-                if (isDrawing && currentTool === 'rectangle') {
+                if (currentTool === 'rectangle') {
                     rectData.width = Math.round(currentX - firstX);
                     rectData.height = Math.round(currentY - firstY);
 
-                    redrawCanvas();
+                    restoreBaseState();
 
-                    if (shapeStrokeColor !== null) {
-                        rectData.strokeColor = shapeStrokeColor;
-                        ctx.strokeStyle = rectData.strokeColor;
-                        ctx.lineWidth = rectData.lineWidth;
-                        ctx.strokeRect(
-                            rectData.x,
-                            rectData.y,
-                            rectData.width,
-                            rectData.height
-                        );
-                    }
                     if (shapeFillColor !== null) {
                         rectData.fillColor = shapeFillColor;
                         ctx.fillStyle = rectData.fillColor;
@@ -263,7 +230,21 @@ const Canvas = ({
                             rectData.height
                         );
                     }
+                    if (shapeStrokeColor !== null) {
+                        rectData.strokeColor = shapeStrokeColor;
+                        ctx.strokeStyle = rectData.strokeColor;
+                        ctx.lineWidth = brushSize;
+                        ctx.strokeRect(
+                            rectData.x,
+                            rectData.y,
+                            rectData.width,
+                            rectData.height
+                        );
+                    }
                 }
+
+                lastX = currentX;
+                lastY = currentY;
             }
         };
 
