@@ -13,7 +13,9 @@ const BrushColor = ({ brushColor, onClick }) => {
                     <button
                         onClick={() => handleColorChange(color)}
                         key={index}
-                        className={`color-button ${color} ${isActive ? 'active' : ''}`}
+                        className={`color-button ${color} ${
+                            isActive ? 'active' : ''
+                        }`}
                         style={{ backgroundColor: color }}
                         title={`Select ${color} color`}
                         aria-label={`Select ${color} color`}
