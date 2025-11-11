@@ -11,11 +11,13 @@ const Canvas = ({
     const canvasRef = useRef(null);
     let drawnShapesRef = useRef([]);
     let drawnLinesRef = useRef([]);
+    let filledSpaceRef = useRef([]);
 
     useImperativeHandle(ref, () => ({
         clearCanvas: () => {
             drawnShapesRef.current = [];
             drawnLinesRef.current = [];
+            filledSpaceRef.current = [];
 
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d');
@@ -55,6 +57,10 @@ const Canvas = ({
                 canvas.height
             );
             const pixels = imageData.data;
+
+            filledSpaceRef.current.push({
+                imageData: imageData,
+            });
 
             const startPos = (startY * canvas.width + startX) * 4;
             const targetColor = [
@@ -105,7 +111,7 @@ const Canvas = ({
             }
             ctx.putImageData(imageData, 0, 0);
         }
-        function colorsMatch(a, b, tolerance = 200) {
+        function colorsMatch(a, b, tolerance = 50) {
             return (
                 Math.abs(a[0] - b[0]) <= tolerance &&
                 Math.abs(a[1] - b[1]) <= tolerance &&
@@ -137,7 +143,9 @@ const Canvas = ({
             y: null,
             width: null,
             height: null,
-            fillColor: brushColor,
+            fillColor: shapeFillColor,
+            strokeColor: shapeStrokeColor,
+            lineWidth: brushSize,
         };
         let lineData = [];
 
@@ -147,9 +155,20 @@ const Canvas = ({
 
             ctx.fillStyle = brushColor;
 
+            filledSpaceRef.current.forEach((space) => {
+                ctx.putImageData(space.imageData, 0, 0);
+            });
+
             drawnShapesRef.current.forEach((shape) => {
-                ctx.fillStyle = shape.fillColor;
-                ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
+                if (shape.strokeColor !== null) {
+                    (ctx.lineWidth = shape.lineWidth),
+                        (ctx.strokeStyle = shape.strokeColor);
+                    ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
+                }
+                if (shape.fillColor !== null) {
+                    ctx.fillStyle = shape.fillColor;
+                    ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
+                }
             });
 
             drawnLinesRef.current.forEach((line) => {
@@ -223,14 +242,27 @@ const Canvas = ({
 
                     redrawCanvas();
 
-                    rectData.fillColor = brushColor;
-                    ctx.fillStyle = rectData.fillColor;
-                    ctx.fillRect(
-                        rectData.x,
-                        rectData.y,
-                        rectData.width,
-                        rectData.height
-                    );
+                    if (shapeStrokeColor !== null) {
+                        rectData.strokeColor = shapeStrokeColor;
+                        ctx.strokeStyle = rectData.strokeColor;
+                        ctx.lineWidth = rectData.lineWidth;
+                        ctx.strokeRect(
+                            rectData.x,
+                            rectData.y,
+                            rectData.width,
+                            rectData.height
+                        );
+                    }
+                    if (shapeFillColor !== null) {
+                        rectData.fillColor = shapeFillColor;
+                        ctx.fillStyle = rectData.fillColor;
+                        ctx.fillRect(
+                            rectData.x,
+                            rectData.y,
+                            rectData.width,
+                            rectData.height
+                        );
+                    }
                 }
             }
         };

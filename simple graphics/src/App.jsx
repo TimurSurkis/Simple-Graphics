@@ -9,8 +9,8 @@ function App() {
     const [brushSize, setBrushSize] = useState(5);
     const [brushColor, setBrushColor] = useState('#000000');
     const [tool, setTool] = useState('pencil');
-    const [shapeFillColor, setShapeFillColor] = useState('#000000');
-    const [shapeStrokeColor, setShapeStrokeColor] = useState('#ffffff');
+    const [shapeFillColor, setShapeFillColor] = useState('#ffffff');
+    const [shapeStrokeColor, setShapeStrokeColor] = useState('#000000');
 
     const canvasRef = useRef();
 
@@ -26,8 +26,10 @@ function App() {
                     onChange={setBrushSize}
                     onClick={handleCanvasClear}
                     currentTool={tool}
-                    shapeFillColor={shapeFillColor}
                     shapeStrokeColor={shapeStrokeColor}
+                    shapeFillColor={shapeFillColor}
+                    setShapeStrokeColor={setShapeStrokeColor}
+                    setShapeFillColor={setShapeFillColor}
                 />
                 <div className="canvas-and-color">
                     <div className="canvas-and-tools">

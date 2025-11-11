@@ -1,4 +1,4 @@
-import BrushColor from './brushParams/BrushColor';
+import ShapeColor from './brushParams/ShapeColor';
 import BrushWidth from './brushParams/BrushWidth';
 import ClearCanvas from './canvasActions/ClearCanvas';
 import { colors } from '../data/color';
@@ -8,8 +8,10 @@ const CanvasTools = ({
     onChange,
     onClick,
     currentTool,
-    shapeFillColor,
     shapeStrokeColor,
+    shapeFillColor,
+    setShapeStrokeColor,
+    setShapeFillColor,
 }) => {
     return (
         <div className="tools-section">
@@ -22,7 +24,7 @@ const CanvasTools = ({
                             <BrushWidth value={value} onChange={onChange} />
                         </div>
                     )}
-                    {currentTool === 'manualShape' && (
+                    {currentTool === 'rectangle' && (
                         <div className="shape-parameters">
                             <div className="param-section brush-width-section">
                                 <h4 className="no-margin">Stroke Width</h4>
@@ -31,23 +33,11 @@ const CanvasTools = ({
                             <div className="shape-colors">
                                 <div className="param-section stroke-color-section">
                                     <h4 className="no-margin">Stroke Color</h4>
-                                    <button
-                                        className="color-button"
-                                        style={{
-                                            backgroundColor:
-                                                'rgba(255, 255, 255, 0',
-                                            border: `2px solid ${shapeStrokeColor}`,
-                                        }}
-                                    ></button>
+                                    <ShapeColor setShapeStrokeColor={setShapeStrokeColor} shapeStrokeColor={shapeStrokeColor} borderFill='border'/>
                                 </div>
                                 <div className="param-section fill-color-section">
                                     <h4 className="no-margin">Fill Color</h4>
-                                    <button
-                                        className="color-button"
-                                        style={{
-                                            backgroundColor: shapeFillColor,
-                                        }}
-                                    ></button>
+                                    <ShapeColor setShapeFillColor={setShapeFillColor} shapeFillColor={shapeFillColor} borderFill='fill'/>
                                 </div>
                             </div>
                         </div>
