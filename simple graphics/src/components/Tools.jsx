@@ -1,7 +1,7 @@
 import { LuPencil } from 'react-icons/lu';
 import { LuPaintBucket } from 'react-icons/lu';
-import { LuSquare } from "react-icons/lu";
-import { LuCircle } from "react-icons/lu";
+import { LuEraser } from 'react-icons/lu';
+import ShapeSelect from './ShapeSelect';
 
 const Tools = ({ currentTool, onClick }) => {
     function setToolHandle(tool) {
@@ -15,15 +15,22 @@ const Tools = ({ currentTool, onClick }) => {
             <button
                 className="tool-btn"
                 onClick={() => setToolHandle('pencil')}
-           >
+            >
                 <LuPencil className="icon" />
+            </button>
+            <button
+                className="tool-btn"
+                onClick={() => setToolHandle('eraser')}
+            >
+                <LuEraser className="icon" />
             </button>
             <button className="tool-btn" onClick={() => setToolHandle('fill')}>
                 <LuPaintBucket className="icon" />
             </button>
-            <button className="tool-btn" onClick={() => setToolHandle('rectangle')}>
-                <LuSquare className="icon" />
-            </button>
+            <ShapeSelect
+                currentTool={currentTool}
+                setToolHandle={setToolHandle}
+            />
         </div>
     );
 };

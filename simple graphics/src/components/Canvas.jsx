@@ -139,7 +139,6 @@ const Canvas = ({
             strokeColor: shapeStrokeColor,
             lineWidth: brushSize,
         };
-        let lineData = [];
         let currentPath = [];
 
         function saveBaseState() {
@@ -157,6 +156,19 @@ const Canvas = ({
             }
         }
 
+        let isShiftPressed = false;
+
+        const shiftDownHandler = (e) => {
+            if (e.key === 'Shift') {
+                isShiftPressed = true;
+            }
+        };
+        const shiftUpHandler = (e) => {
+            if (e.key === 'Shift') {
+                isShiftPressed = false;
+            }
+        };
+
         const mouseDownHandler = (e) => {
             canvasCoords = canvas.getBoundingClientRect();
             isDrawing = true;
@@ -166,11 +178,30 @@ const Canvas = ({
             lastX = Math.round(e.clientX - canvasCoords.left);
             lastY = Math.round(e.clientY - canvasCoords.top);
 
-            if (currentTool === 'rectangle' || currentTool === 'pencil') {
+            window.addEventListener('keydown', shiftDownHandler);
+            window.addEventListener('keyup', shiftUpHandler);
+
+            if (
+                currentTool === 'rectangle' ||
+                currentTool === 'pencil' ||
+                currentTool === 'ellipse' ||
+                currentTool === 'eraser'
+            ) {
                 saveBaseState();
             }
 
             if (currentTool === 'pencil') {
+                currentPath = [[firstX, firstY]];
+                ctx.strokeStyle = brushColor;
+                ctx.fillStyle = brushColor;
+                ctx.beginPath();
+                ctx.arc(firstX, firstY, brushSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            if (currentTool === 'eraser') {
+                ctx.strokeStyle = 'white';
+                ctx.fillStyle = 'white';
                 currentPath = [[firstX, firstY]];
                 ctx.beginPath();
                 ctx.arc(firstX, firstY, brushSize / 2, 0, Math.PI * 2);
@@ -187,8 +218,11 @@ const Canvas = ({
             }
         };
         const mouseUpHandler = () => {
-            if (currentTool === 'rectangle' || currentTool === 'pencil') {
+            if (currentTool !== 'fill') {
                 isDrawing = false;
+                ctx.globalCompositeOperation = 'source-over';
+                window.removeEventListener('keydown', shiftDownHandler);
+                window.removeEventListener('keyup', shiftUpHandler);
             }
         };
         const mouseMoveHandler = (e) => {
@@ -196,12 +230,22 @@ const Canvas = ({
                 currentX = e.clientX - canvasCoords.left;
                 currentY = e.clientY - canvasCoords.top;
 
-                if (currentTool === 'pencil') {
+                const deltaX = Math.abs(currentX - firstX);
+                const deltaY = Math.abs(currentY - firstY);
+
+                if (isShiftPressed) {
+                    if (deltaX > deltaY) {
+                        currentY = lastY;
+                    } else {
+                        currentX = lastX;
+                    }
+                }
+
+                if (currentTool === 'pencil' || currentTool === 'eraser') {
                     currentPath.push([currentX, currentY]);
 
                     restoreBaseState();
 
-                    ctx.strokeStyle = brushColor;
                     ctx.lineWidth = brushSize;
                     ctx.lineCap = 'round';
                     ctx.lineJoin = 'round';
@@ -215,10 +259,14 @@ const Canvas = ({
                 }
 
                 if (currentTool === 'rectangle') {
+                    restoreBaseState();
+
                     rectData.width = Math.round(currentX - firstX);
                     rectData.height = Math.round(currentY - firstY);
 
-                    restoreBaseState();
+                    if (isShiftPressed) {
+                        rectData.height = rectData.width;
+                    }
 
                     if (shapeFillColor !== null) {
                         rectData.fillColor = shapeFillColor;
@@ -240,6 +288,35 @@ const Canvas = ({
                             rectData.width,
                             rectData.height
                         );
+                    }
+                }
+                if (currentTool === 'ellipse') {
+                    let elipseWidth = Math.abs(currentX - firstX);
+                    let elipseHeight = Math.abs(currentY - firstY);
+
+                    restoreBaseState();
+
+                    if (isShiftPressed) {
+                        elipseHeight = elipseWidth;
+                    }
+
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        firstX + elipseWidth / 2,
+                        firstY + elipseHeight / 2,
+                        elipseWidth / 2,
+                        elipseHeight / 2,
+                        0,
+                        0,
+                        2 * Math.PI
+                    );
+                    if (shapeFillColor !== null) {
+                        ctx.fillStyle = shapeFillColor;
+                        ctx.fill();
+                    }
+                    if (shapeStrokeColor !== null) {
+                        ctx.strokeStyle = shapeStrokeColor;
+                        ctx.stroke();
                     }
                 }
 
