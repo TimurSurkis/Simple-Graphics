@@ -182,10 +182,11 @@ const Canvas = ({
             window.addEventListener('keyup', shiftUpHandler);
 
             if (
-                currentTool === 'rectangle' ||
                 currentTool === 'pencil' ||
+                currentTool === 'eraser' ||
+                currentTool === 'rectangle' ||
                 currentTool === 'ellipse' ||
-                currentTool === 'eraser'
+                currentTool === 'triangle'
             ) {
                 saveBaseState();
             }
@@ -310,6 +311,41 @@ const Canvas = ({
                         0,
                         2 * Math.PI
                     );
+                    if (shapeFillColor !== null) {
+                        ctx.fillStyle = shapeFillColor;
+                        ctx.fill();
+                    }
+                    if (shapeStrokeColor !== null) {
+                        ctx.strokeStyle = shapeStrokeColor;
+                        ctx.stroke();
+                    }
+                }
+
+                let triangleData = [];
+
+                if (currentTool === 'triangle') {
+                    const firstTriX = (currentX - firstX) / 2 + firstX;
+                    console.log(firstTriX);
+                    const firstTriY = firstY;
+                    const secondTriX = currentX;
+                    const secondTriY = currentY;
+                    const thirdTriX = firstX;
+                    const thirdTriY = currentY;
+
+                    triangleData = [
+                        [firstTriX, firstTriY],
+                        [secondTriX, secondTriY],
+                        [thirdTriX, thirdTriY],
+                    ];
+
+                    restoreBaseState();
+
+                    ctx.beginPath();
+                    ctx.moveTo(triangleData[0][0], triangleData[0][1]);
+                    for (let i = 1; i < triangleData.length; i++) {
+                        ctx.lineTo(triangleData[i][0], triangleData[i][1]);
+                    }
+                    ctx.lineTo(triangleData[0][0], triangleData[0][1]);
                     if (shapeFillColor !== null) {
                         ctx.fillStyle = shapeFillColor;
                         ctx.fill();

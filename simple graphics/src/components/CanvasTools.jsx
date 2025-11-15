@@ -25,43 +25,35 @@ const CanvasTools = ({
                         </div>
                     )}
                     {(currentTool === 'rectangle' ||
-                        currentTool === 'ellipse') && (
-                            <div className="shape-parameters">
-                                <div className="param-section brush-width-section">
-                                    <h4 className="no-margin">Stroke Width</h4>
-                                    <BrushWidth
-                                        value={value}
-                                        onChange={onChange}
+                        currentTool === 'ellipse' ||
+                        currentTool === 'triangle') && (
+                        <div className="shape-parameters">
+                            <div className="param-section brush-width-section">
+                                <h4 className="no-margin">Stroke Width</h4>
+                                <BrushWidth value={value} onChange={onChange} />
+                            </div>
+                            <div className="shape-colors">
+                                <div className="param-section stroke-color-section">
+                                    <h4 className="no-margin">Stroke Color</h4>
+                                    <ShapeColor
+                                        setShapeStrokeColor={
+                                            setShapeStrokeColor
+                                        }
+                                        shapeStrokeColor={shapeStrokeColor}
+                                        borderFill="border"
                                     />
                                 </div>
-                                <div className="shape-colors">
-                                    <div className="param-section stroke-color-section">
-                                        <h4 className="no-margin">
-                                            Stroke Color
-                                        </h4>
-                                        <ShapeColor
-                                            setShapeStrokeColor={
-                                                setShapeStrokeColor
-                                            }
-                                            shapeStrokeColor={shapeStrokeColor}
-                                            borderFill="border"
-                                        />
-                                    </div>
-                                    <div className="param-section fill-color-section">
-                                        <h4 className="no-margin">
-                                            Fill Color
-                                        </h4>
-                                        <ShapeColor
-                                            setShapeFillColor={
-                                                setShapeFillColor
-                                            }
-                                            shapeFillColor={shapeFillColor}
-                                            borderFill="fill"
-                                        />
-                                    </div>
+                                <div className="param-section fill-color-section">
+                                    <h4 className="no-margin">Fill Color</h4>
+                                    <ShapeColor
+                                        setShapeFillColor={setShapeFillColor}
+                                        shapeFillColor={shapeFillColor}
+                                        borderFill="fill"
+                                    />
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="canvas-actions">
