@@ -1,0 +1,232 @@
+#root {
+	max-width: 64rem;
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+}
+
+.logo {
+	height: 6em;
+	padding: 1.5em;
+	will-change: filter;
+	transition: filter 300ms;
+}
+.logo:hover {
+	filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+	filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	a:nth-of-type(2) .logo {
+		animation: logo-spin infinite 20s linear;
+	}
+}
+
+.card {
+	padding: 2em;
+}
+
+.read-the-docs {
+	color: #888;
+}
+
+.tools-section {
+	background-color: #2e2e2e;
+	border-radius: 0.3rem;
+	padding: 0.5rem 0.7rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 0.5rem;
+	min-width: 5.8rem;
+}
+
+.brush-params {
+	display: flex;
+	align-items: end;
+	justify-content: space-around;
+	margin-bottom: 0.6rem;
+}
+
+.brush-size-display {
+	display: flex;
+	align-items: center;
+	gap: 0.2rem;
+}
+
+.brush-size-preview {
+	background-color: white;
+	border-radius: 50%;
+}
+
+/* .brush-width-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+} */
+
+.brush-width-controls {
+	display: flex;
+	justify-content: center;
+	gap: 0.3rem;
+}
+
+.brush-color-grid {
+	display: grid;
+	grid-gap: 0.3rem;
+	grid-template-rows: repeat(11, 1fr);
+	grid-auto-flow: column;
+}
+
+.shape-color-grid {
+	display: grid;
+	grid-gap: 0.4rem;
+	grid-template-rows: repeat(6, 1fr);
+	grid-auto-flow: column;
+	position: absolute;
+	background-color: #2e2e2e;
+	border-radius: 0.4rem;
+	padding: 0.5rem;
+	justify-items: center;
+	align-items: center;
+	z-index: 10;
+	top: 4rem;
+}
+
+.brushSizeField {
+	max-width: 1.5rem;
+}
+
+.brushSizeField::-webkit-outer-spin-button,
+.brushSizeField::-webkit-inner-spin-button {
+	appearance: none;
+}
+
+.color-button {
+	width: 2rem;
+	height: 2rem;
+	border-radius: 20%;
+	border: 0.1rem solid white;
+	font-size: 0;
+}
+
+.color-button:not(:last-child) {
+	margin-right: 0.4rem;
+}
+
+.shape-color-button {
+	width: 2rem;
+	height: 2rem;
+	border-radius: 20%;
+	margin: 0;
+}
+
+.none-color-button {
+	display: flex;
+	padding: 0;
+	align-items: center;
+	justify-content: center;
+}
+
+.canvas-and-settings {
+	display: flex;
+	gap: 0.8rem;
+}
+
+.tools-upper {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+}
+
+.canvas-actions {
+	max-width: 40rem;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin-bottom: 0.6rem;
+}
+
+.tools-panel {
+	display: flex;
+	gap: 0.4rem;
+}
+
+.canvas-and-tools {
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	gap: 0.6rem;
+}
+
+.canvas-and-color {
+	display: flex;
+	align-items: flex-end;
+	gap: 0.8rem;
+}
+
+.tool-btn {
+	padding: 0.4rem 0.6rem;
+	display: flex;
+	align-items: center;
+}
+
+.shape-select-btn {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding-right: 0.3rem;
+	border-radius: 0.4rem 0.4rem 0.4rem 0;
+}
+
+.shapes {
+	position: relative;
+}
+
+.shapes-list {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	left: 0;
+	background-color: #525252;
+	border-radius: 0 0 0.4rem 0.4rem;
+}
+.shapes-list button {
+	background-color: none;
+}
+
+.icon {
+	font-size: 1.2rem;
+}
+
+.shape-parameters {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.shape-colors {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+}
+
+.param-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.4rem;
+	position: relative;
+}
